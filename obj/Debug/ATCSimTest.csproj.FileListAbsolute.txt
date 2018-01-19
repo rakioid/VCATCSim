@@ -1,0 +1,9 @@
+c:\users\max\documents\visual studio 2017\Projects\ATCSimTest\ATCSimTest\bin\Debug\ATCSimTest.exe.config
+c:\users\max\documents\visual studio 2017\Projects\ATCSimTest\ATCSimTest\bin\Debug\ATCSimTest.exe
+c:\users\max\documents\visual studio 2017\Projects\ATCSimTest\ATCSimTest\bin\Debug\ATCSimTest.pdb
+c:\users\max\documents\visual studio 2017\Projects\ATCSimTest\ATCSimTest\obj\Debug\ATCSimTest.Form1.resources
+c:\users\max\documents\visual studio 2017\Projects\ATCSimTest\ATCSimTest\obj\Debug\ATCSimTest.Properties.Resources.resources
+c:\users\max\documents\visual studio 2017\Projects\ATCSimTest\ATCSimTest\obj\Debug\ATCSimTest.csproj.GenerateResource.Cache
+c:\users\max\documents\visual studio 2017\Projects\ATCSimTest\ATCSimTest\obj\Debug\ATCSimTest.exe
+c:\users\max\documents\visual studio 2017\Projects\ATCSimTest\ATCSimTest\obj\Debug\ATCSimTest.pdb
+c:\users\max\documents\visual studio 2017\Projects\ATCSimTest\ATCSimTest\obj\Debug\ATCSimTest.csprojResolveAssemblyReference.cache

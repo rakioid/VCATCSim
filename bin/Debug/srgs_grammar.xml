@@ -1,0 +1,343 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<grammar version="1.0" xml:lang="en-US" mode="voice" root="toplevel"
+xmlns="http://www.w3.org/2001/06/grammar" tag-format="semantics/1.0">
+
+  <rule id="toplevel">
+    <!-- INIT -->
+    <tag>out.clearance = "N"; out.information = "N"; out.negative = 0</tag>
+
+    <item repeat="0-1">
+      Negative
+      <tag>out.negative = 1;</tag>
+    </item>
+    <ruleref uri="#callsign" />
+    <tag> out.callsign = rules.callsign; </tag>
+    <item repeat="0-1">
+      <ruleref uri="#unit" />
+      <item>identified</item>
+    </item>
+    <item repeat="0-4">
+      <one-of>
+        <item>
+          <ruleref uri="#clearance" />
+          <tag> out.clearance += rules.latest();</tag>
+        </item>
+        <item>
+          <ruleref uri="#information" />
+          <tag> out.information += rules.latest();</tag>
+        </item>
+      </one-of>
+    </item>
+    
+  </rule>
+
+  <rule id="unit">
+    <one-of>
+      <item>Zagreb</item>
+      <item>Split</item>
+    </one-of>
+    <one-of>
+      <item>Tower</item>
+      <item>Radar</item>
+    </one-of>
+  </rule>
+
+  <rule id="callsign">
+    <one-of>
+      <item>lufthansa <tag>out = "DLH";</tag>
+      </item>
+      <item>turkish <tag>out = "THY";</tag>
+    </item>
+      <item>speedbird <tag>out = "BAW";</tag>
+    </item>
+    </one-of>
+    <item repeat="1-4">
+      <one-of>
+        <item>
+          <ruleref uri="#number" />
+          <tag>out += rules.latest();</tag>
+        </item>
+        <item>
+          <ruleref uri="#alphabet" />
+          <tag>out += rules.latest();</tag>
+        </item>
+      </one-of>
+    </item>
+  </rule>
+
+  <rule id="clearance">
+    <one-of>
+      <item>
+        <ruleref uri="#rwyops" />
+        <tag>out = rules.rwyops;</tag>
+      </item>
+      <item>
+        <ruleref uri="#heading" />
+        <tag>out = rules.heading;</tag>
+      </item>
+      <item>
+        <ruleref uri="#level" />
+        <tag>out = rules.level;</tag>
+      </item>
+      <item>
+        <ruleref uri="#speed" />
+        <tag>out = rules.speed;</tag>
+      </item>
+    </one-of>
+  </rule>
+
+  <rule id="information">
+    <one-of>
+      <item>
+        <ruleref uri="#windinfo" />
+        <tag>out = rules.windinfo;</tag>
+      </item>
+    </one-of>
+  </rule>
+
+  <!-- runway operation instructions -->
+  <rule id="rwyops">
+    <item>cleared</item>
+    <one-of>
+      <item>
+        for take off
+        <tag>out = "TKOF";</tag>
+      </item>
+      <item>
+        to land
+        <tag>out = "LAND"</tag>
+      </item>
+    </one-of>
+    <item>runway</item>
+    <one-of>
+      <item>
+        zero five
+        <tag>out += "R05";</tag>
+      </item>
+      <item>
+        two three
+        <tag>out += "R23";</tag>
+      </item>
+    </one-of>
+  </rule>
+
+  <rule id="heading">
+    <item>turn</item>
+    <one-of>
+      <item>
+        left
+        <tag>out = "TL";</tag>
+      </item>
+      <item>
+        right
+        <tag>out = "TR";</tag>
+      </item>
+    </one-of>
+    <one-of>
+      <!-- heading defined turn -->
+      <item>
+        heading
+        <tag>out += "H";</tag>
+        <item repeat="3">
+          <ruleref uri="#number" />
+          <tag>out += rules.latest();</tag>
+        </item>
+      </item>
+      <!-- degrees defined turn -->
+      <item>
+        <tag>out += "D";</tag>
+        <item repeat="0-1">by</item>
+        <item repeat="1-2">
+          <ruleref uri="#number" />
+          <tag>out += rules.latest();</tag>
+        </item>
+        degrees
+      </item>
+    </one-of>
+  </rule>
+
+  <rule id="level">
+    <one-of>
+      <item>climb</item>
+      <item>descend</item>
+    </one-of>
+    <item repeat="0-1">to</item>
+    <one-of>
+      <!-- flight level -->
+      <item>
+        <item>flight level</item>
+        <item repeat="3">
+          <ruleref uri="#number" />
+        </item>
+      </item>
+      <!-- altitude -->
+      <item>
+        <item repeat="0-1">altitude</item>
+        <item repeat="1-">
+          <one-of>
+            <item>
+              <ruleref uri="#number" />
+            </item>
+            <item>
+              <ruleref uri="#multiplier" />
+            </item>
+          </one-of>
+        </item>
+      </item>
+    </one-of>
+  </rule>
+
+  <rule id="speed">
+    <one-of>
+      <item>increase speed</item>
+      <item>reduce speed</item>
+    </one-of>
+    <one-of>
+      <item>
+        <!-- Indicated speed control -->
+        <item repeat="0-1">to</item>
+        <item repeat="2-3">
+          <ruleref uri="#number" />
+        </item>
+        <item>knots</item>
+        <item>indicated</item>
+      </item>
+      
+      <item>
+        <!-- Mach speed control -->
+        <item repeat="0-1">to</item>
+        <item>mach point</item>
+        <item repeat="2">
+          <ruleref uri="#number" />
+        </item>
+      </item>
+    </one-of>
+  </rule>
+
+  <rule id="windinfo">
+    <item>wind</item>
+    <item repeat="3">
+      <ruleref uri="#number" />
+    </item>
+    <item>degrees</item>
+    <item repeat="1-2">
+      <ruleref uri="#number" />
+    </item>
+    <item>knots</item>
+  </rule>
+
+
+  <rule id="number">
+    <one-of>
+      <item>zero <tag>out = "0"</tag>
+    </item>
+      <item>one <tag>out = "1"</tag>
+    </item>
+      <item>two <tag>out = "2"</tag>
+    </item>
+      <item>three <tag>out = "3"</tag>
+    </item>
+      <item>four <tag>out = "4"</tag>
+    </item>
+      <item>five <tag>out = "5"</tag>
+    </item>
+      <item>six <tag>out = "6"</tag>
+    </item>
+      <item>seven <tag>out = "7"</tag>
+    </item>
+      <item>eight <tag>out = "8"</tag>
+    </item>
+      <item>niner <tag>out = "9"</tag>
+    </item>
+    </one-of>
+  </rule>
+  <rule id="multiplier">
+    <one-of>
+      <item>thousand</item>
+      <item>hundred</item>
+    </one-of>
+  </rule>
+  <rule id="alphabet">
+    <one-of>
+      <item>
+        alpha <tag>out = "A"</tag>
+      </item>
+      <item>
+        bravo <tag>out = "B"</tag>
+      </item>
+      <item>
+        charlie <tag>out = "C"</tag>
+      </item>
+      <item>
+        delta <tag>out = "D"</tag>
+      </item>
+      <item>
+        echo <tag>out = "E"</tag>
+      </item>
+      <item>
+        foxtrot <tag>out = "F"</tag>
+      </item>
+      <item>
+        golf <tag>out = "G"</tag>
+      </item>
+      <item>
+        hotel <tag>out = "H"</tag>
+      </item>
+      <item>
+        india <tag>out = "I"</tag>
+      </item>
+      <item>
+        juliet <tag>out = "J"</tag>
+      </item>
+      <item>
+        kilo <tag>out = "K"</tag>
+      </item>
+      <item>
+        lima <tag>out = "L"</tag>
+      </item>
+      <item>
+        mike <tag>out = "M"</tag>
+      </item>
+      <item>
+        november <tag>out = "N"</tag>
+      </item>
+      <item>
+        oscar <tag>out = "O"</tag>
+      </item>
+      <item>
+        papa <tag>out = "P"</tag>
+      </item>
+      <item>
+        quebec <tag>out = "Q"</tag>
+      </item>
+      <item>
+        romeo <tag>out = "R"</tag>
+      </item>
+      <item>
+        sierra <tag>out = "S"</tag>
+      </item>
+      <item>
+        tango <tag>out = "T"</tag>
+      </item>
+      <item>
+        uniform <tag>out = "U"</tag>
+      </item>
+      <item>
+        victor <tag>out = "V"</tag>
+      </item>
+      <item>
+        whiskey <tag>out = "W"</tag>
+      </item>
+      <item>
+        x-ray <tag>out = "X"</tag>
+      </item>
+      <item>
+        yankee <tag>out = "Y"</tag>
+      </item>
+      <item>
+        zulu <tag>out = "Z"</tag>
+      </item>
+    </one-of>
+  </rule>
+
+</grammar>
